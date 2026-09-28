@@ -9,6 +9,7 @@ import { mapWithConcurrency } from "../util/concurrency";
 
 const MAX_BUFFER = 4 * 1024 * 1024;
 const DEFAULT_TTL = 30_000;
+const GIT_TIMEOUT = 10_000;
 
 interface CacheEntry {
   at: number;
@@ -101,6 +102,7 @@ export class GitService {
         ["-C", rootPath, ...args],
         {
           windowsHide: true,
+          timeout: GIT_TIMEOUT,
           maxBuffer: MAX_BUFFER,
           env: {
             ...process.env,

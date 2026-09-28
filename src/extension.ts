@@ -66,7 +66,9 @@ export async function activate(
 
   context.subscriptions.push(registerWatchers(scanner, git));
 
-  await refresh();
+  // Never block activation on the scan: the views register instantly and the
+  // first result is pushed when it is ready.
+  void refresh();
   updateStatus();
 }
 

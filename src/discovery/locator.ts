@@ -22,6 +22,7 @@ export async function locateProjects(
   options: LocateOptions,
 ): Promise<DiscoveredProject[]> {
   const found = new Map<string, DiscoveredProject>();
+  const budget = { visited: 0 };
 
   for (const raw of options.baseFolders) {
     const base = normalize(expandHome(raw.trim(), options.home));
@@ -33,11 +34,13 @@ export async function locateProjects(
     if (!root || !(await pathExists(root))) {
       continue;
     }
-    await walk(root, 0, matcher, options, found);
+    await walk(root, 0, matcher, options, found, budget);
   }
 
   return [...found.values()];
 }
+
+const MAX_DIRECTORIES = 50_000;
 
 async function walk(
   dir: string,
@@ -45,7 +48,13 @@ async function walk(
   matcher: RegExp | null,
   options: LocateOptions,
   found: Map<string, DiscoveredProject>,
+  budget: { visited: number },
 ): Promise<void> {
+  if (budget.visited >= MAX_DIRECTORIES) {
+    return;
+  }
+  budget.visited++;
+
   const kind = await markerKind(dir);
   if (kind && (matcher === null || matcher.test(normalize(dir)))) {
     if (!found.has(dir)) {
@@ -76,7 +85,14 @@ async function walk(
     if (isIgnored(entry.name, options.ignoredFolders)) {
       continue;
     }
-    await walk(path.join(dir, entry.name), depth + 1, matcher, options, found);
+    await walk(
+      path.join(dir, entry.name),
+      depth + 1,
+      matcher,
+      options,
+      found,
+      budget,
+    );
   }
 }
 
