@@ -6,10 +6,10 @@ export function groupLabel(key: string): string {
     return "";
   }
   if (key === UNTAGGED_KEY) {
-    return vscode.l10n.t("dashboard.group.untagged");
+    return vscode.l10n.t("Untagged");
   }
   if (key === LOCAL_KEY) {
-    return vscode.l10n.t("dashboard.group.local");
+    return vscode.l10n.t("Local");
   }
   return key;
 }

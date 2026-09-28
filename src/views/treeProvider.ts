@@ -88,7 +88,7 @@ function projectItem(project: ProjectView): vscode.TreeItem {
   item.iconPath = new vscode.ThemeIcon(project.git ? "git-branch" : "folder");
   item.command = {
     command: "projectDeck.open",
-    title: "Open Project",
+    title: vscode.l10n.t("Open Project"),
     arguments: [project.id],
   };
 

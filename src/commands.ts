@@ -49,7 +49,7 @@ export function createActions(deps: ActionDeps): DeckActions {
   ): Promise<void> => {
     if (!(await pathExists(project.rootPath))) {
       void vscode.window.showErrorMessage(
-        t("error.notFound", project.rootPath),
+        t("Project path is missing: {0}", project.rootPath),
       );
       return;
     }
@@ -76,13 +76,13 @@ export function createActions(deps: ActionDeps): DeckActions {
 
   return {
     open: async (id) => {
-      const project = await resolve(id, t("prompt.pickProject"));
+      const project = await resolve(id, t("Pick a project"));
       if (project) {
         await openProject(project, false);
       }
     },
     openInNewWindow: async (id) => {
-      const project = await resolve(id, t("prompt.pickProject"));
+      const project = await resolve(id, t("Pick a project"));
       if (project) {
         await openProject(project, true);
       }
@@ -91,7 +91,9 @@ export function createActions(deps: ActionDeps): DeckActions {
       const config = getConfig();
       const views = sortProjects(deps.scanner.getViews(), "frecency");
       if (views.length === 0) {
-        void vscode.window.showInformationMessage(t("dashboard.empty"));
+        void vscode.window.showInformationMessage(
+          t("No projects yet. Add base folders in settings, then refresh."),
+        );
         return;
       }
       const items: ProjectPick[] = views.map((project) => ({
@@ -101,7 +103,7 @@ export function createActions(deps: ActionDeps): DeckActions {
         id: project.id,
       }));
       const picked = await vscode.window.showQuickPick(items, {
-        placeHolder: t("prompt.pickProject"),
+        placeHolder: t("Pick a project"),
         matchOnDetail: true,
       });
       if (!picked) {
@@ -123,7 +125,7 @@ export function createActions(deps: ActionDeps): DeckActions {
         (project) => pathKey(project.rootPath) === pathKey(rootPath),
       );
       const name = await vscode.window.showInputBox({
-        prompt: t("prompt.saveName"),
+        prompt: t("Project name"),
         value: existing?.name ?? folder.name,
       });
       if (!name) {
@@ -147,7 +149,7 @@ export function createActions(deps: ActionDeps): DeckActions {
         .filter((project) => project.favorite);
       const project = await pickProject(
         deps,
-        t("prompt.pickProjectToRemove"),
+        t("Pick a project to remove"),
         saved,
       );
       if (!project) {
@@ -157,7 +159,7 @@ export function createActions(deps: ActionDeps): DeckActions {
       await deps.refresh();
     },
     togglePin: async (id) => {
-      const project = await resolve(id, t("prompt.pickProjectToPin"));
+      const project = await resolve(id, t("Pick a project to pin or unpin"));
       if (!project) {
         return;
       }
@@ -175,13 +177,13 @@ export function createActions(deps: ActionDeps): DeckActions {
       await deps.refresh();
     },
     editTags: async (id) => {
-      const project = await resolve(id, t("prompt.pickProjectToTag"));
+      const project = await resolve(id, t("Pick a project to tag"));
       if (!project) {
         return;
       }
       const config = getConfig();
       const value = await vscode.window.showInputBox({
-        prompt: t("prompt.tags"),
+        prompt: t("Tags (comma separated)"),
         value: project.tags.join(", "),
         placeHolder: config.tags.join(", "),
       });
@@ -203,7 +205,7 @@ export function createActions(deps: ActionDeps): DeckActions {
       await deps.refresh();
     },
     reveal: async (id) => {
-      const project = await resolve(id, t("prompt.pickProject"));
+      const project = await resolve(id, t("Pick a project"));
       if (project) {
         await vscode.commands.executeCommand(
           "revealFileInOS",
@@ -212,7 +214,7 @@ export function createActions(deps: ActionDeps): DeckActions {
       }
     },
     copyPath: async (id) => {
-      const project = await resolve(id, t("prompt.pickProject"));
+      const project = await resolve(id, t("Pick a project"));
       if (project) {
         await vscode.env.clipboard.writeText(project.rootPath);
       }
@@ -224,7 +226,9 @@ export function createActions(deps: ActionDeps): DeckActions {
       }
       const imported = await readProjectManagerProjects(file);
       if (imported.length === 0) {
-        void vscode.window.showInformationMessage(t("import.none"));
+        void vscode.window.showInformationMessage(
+          t("No projects found in the selected file."),
+        );
         return;
       }
       const saved = deps.store.getProjects();
@@ -241,11 +245,13 @@ export function createActions(deps: ActionDeps): DeckActions {
       }
       await deps.store.setProjects(saved);
       await deps.refresh();
-      void vscode.window.showInformationMessage(t("import.done", added));
+      void vscode.window.showInformationMessage(
+        t("Imported {0} project(s) from Project Manager.", added),
+      );
     },
     exportProjects: async () => {
       const target = await vscode.window.showSaveDialog({
-        title: t("export.pickFile"),
+        title: t("Save Project Deck projects"),
         defaultUri: vscode.Uri.file(joinPath(homedir(), "project-deck.json")),
         filters: { JSON: ["json"] },
       });
@@ -258,7 +264,7 @@ export function createActions(deps: ActionDeps): DeckActions {
         Buffer.from(JSON.stringify(projects, null, 2), "utf8"),
       );
       void vscode.window.showInformationMessage(
-        t("export.done", projects.length),
+        t("Exported {0} project(s).", projects.length),
       );
     },
   };
@@ -309,7 +315,9 @@ async function pickProject(
 ): Promise<ProjectView | undefined> {
   const views = source ?? sortProjects(deps.scanner.getViews(), "frecency");
   if (views.length === 0) {
-    void vscode.window.showInformationMessage(t("dashboard.empty"));
+    void vscode.window.showInformationMessage(
+      t("No projects yet. Add base folders in settings, then refresh."),
+    );
     return undefined;
   }
   const items: ProjectPick[] = views.map((project) => ({
@@ -413,7 +421,7 @@ async function pickProjectManagerFile(): Promise<string | undefined> {
   }
   const picked = await vscode.window.showOpenDialog({
     canSelectMany: false,
-    title: t("import.pickFile"),
+    title: t("Select the Project Manager projects.json file"),
     filters: { JSON: ["json"] },
   });
   return picked?.[0]?.fsPath;
