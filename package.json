@@ -1,0 +1,337 @@
+{
+  "name": "project-deck",
+  "displayName": "Project Deck",
+  "description": "A git-aware project hub: auto-discovers repositories, shows branch and working-tree state, ranks by recent activity and groups them by folder, tag or remote.",
+  "version": "0.0.1",
+  "publisher": "jenesei-software",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jenesei-software/vscode-project-deck"
+  },
+  "bugs": {
+    "url": "https://github.com/jenesei-software/vscode-project-deck/issues"
+  },
+  "homepage": "https://github.com/jenesei-software/vscode-project-deck#readme",
+  "engines": {
+    "vscode": "^1.85.0",
+    "node": ">=22"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "projects",
+    "git",
+    "repositories",
+    "workspace",
+    "switcher",
+    "favorites",
+    "tags",
+    "dashboard"
+  ],
+  "icon": "resources/icon.png",
+  "main": "./dist/extension.js",
+  "capabilities": {
+    "virtualWorkspaces": true,
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
+  "l10n": "./l10n",
+  "activationEvents": [
+    "onView:projectDeck.dashboard",
+    "onView:projectDeck.groups"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "projectDeck",
+          "title": "Project Deck",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "projectDeck": [
+        {
+          "id": "projectDeck.dashboard",
+          "name": "%view.dashboard%",
+          "type": "webview",
+          "icon": "resources/icon.svg"
+        },
+        {
+          "id": "projectDeck.groups",
+          "name": "%view.groups%",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "projectDeck.open",
+        "title": "%command.open%",
+        "category": "Project Deck"
+      },
+      {
+        "command": "projectDeck.openInNewWindow",
+        "title": "%command.openInNewWindow%",
+        "category": "Project Deck"
+      },
+      {
+        "command": "projectDeck.switch",
+        "title": "%command.switch%",
+        "category": "Project Deck"
+      },
+      {
+        "command": "projectDeck.saveCurrent",
+        "title": "%command.saveCurrent%",
+        "category": "Project Deck",
+        "icon": "$(add)"
+      },
+      {
+        "command": "projectDeck.removeProject",
+        "title": "%command.removeProject%",
+        "category": "Project Deck"
+      },
+      {
+        "command": "projectDeck.togglePin",
+        "title": "%command.togglePin%",
+        "category": "Project Deck"
+      },
+      {
+        "command": "projectDeck.editTags",
+        "title": "%command.editTags%",
+        "category": "Project Deck"
+      },
+      {
+        "command": "projectDeck.refresh",
+        "title": "%command.refresh%",
+        "category": "Project Deck",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "projectDeck.reveal",
+        "title": "%command.reveal%",
+        "category": "Project Deck"
+      },
+      {
+        "command": "projectDeck.copyPath",
+        "title": "%command.copyPath%",
+        "category": "Project Deck"
+      },
+      {
+        "command": "projectDeck.openSettings",
+        "title": "%command.openSettings%",
+        "category": "Project Deck",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "projectDeck.importFromProjectManager",
+        "title": "%command.importFromProjectManager%",
+        "category": "Project Deck"
+      },
+      {
+        "command": "projectDeck.exportJson",
+        "title": "%command.exportJson%",
+        "category": "Project Deck"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "projectDeck.saveCurrent",
+          "when": "view == projectDeck.groups",
+          "group": "navigation@1"
+        },
+        {
+          "command": "projectDeck.refresh",
+          "when": "view =~ /^projectDeck\\./",
+          "group": "navigation@2"
+        },
+        {
+          "command": "projectDeck.openSettings",
+          "when": "view =~ /^projectDeck\\./",
+          "group": "navigation@3"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "projectDeck.open",
+          "when": "false"
+        },
+        {
+          "command": "projectDeck.reveal",
+          "when": "false"
+        },
+        {
+          "command": "projectDeck.copyPath",
+          "when": "false"
+        },
+        {
+          "command": "projectDeck.removeProject",
+          "when": "false"
+        },
+        {
+          "command": "projectDeck.togglePin",
+          "when": "false"
+        },
+        {
+          "command": "projectDeck.editTags",
+          "when": "false"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "%config.title%",
+      "properties": {
+        "projectDeck.baseFolders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "scope": "window",
+          "markdownDescription": "%config.baseFolders%"
+        },
+        "projectDeck.ignoredFolders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "node_modules",
+            ".venv",
+            "venv",
+            "dist",
+            "out",
+            "build",
+            "target",
+            ".next",
+            ".cache",
+            ".turbo"
+          ],
+          "scope": "window",
+          "markdownDescription": "%config.ignoredFolders%"
+        },
+        "projectDeck.maxDepthRecursion": {
+          "type": "number",
+          "default": 3,
+          "minimum": 1,
+          "scope": "window",
+          "markdownDescription": "%config.maxDepthRecursion%"
+        },
+        "projectDeck.groupBy": {
+          "type": "string",
+          "enum": [
+            "path",
+            "tag",
+            "org",
+            "none"
+          ],
+          "default": "path",
+          "scope": "window",
+          "markdownDescription": "%config.groupBy%"
+        },
+        "projectDeck.pathGroupDepth": {
+          "type": "number",
+          "default": 1,
+          "minimum": 1,
+          "scope": "window",
+          "markdownDescription": "%config.pathGroupDepth%"
+        },
+        "projectDeck.tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "Personal",
+            "Work"
+          ],
+          "scope": "window",
+          "markdownDescription": "%config.tags%"
+        },
+        "projectDeck.multiTagGroups": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "%config.multiTagGroups%"
+        },
+        "projectDeck.sortList": {
+          "type": "string",
+          "enum": [
+            "frecency",
+            "attention",
+            "name",
+            "path",
+            "recent"
+          ],
+          "default": "frecency",
+          "scope": "window",
+          "markdownDescription": "%config.sortList%"
+        },
+        "projectDeck.showGitStatus": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "%config.showGitStatus%"
+        },
+        "projectDeck.concurrency": {
+          "type": "number",
+          "default": 6,
+          "minimum": 1,
+          "maximum": 32,
+          "scope": "window",
+          "markdownDescription": "%config.concurrency%"
+        },
+        "projectDeck.openInNewWindow": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "%config.openInNewWindow%"
+        },
+        "projectDeck.statusBar": {
+          "type": "boolean",
+          "default": true,
+          "scope": "window",
+          "markdownDescription": "%config.statusBar%"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build:prod",
+    "build": "node esbuild.mjs",
+    "build:watch": "node esbuild.mjs --watch",
+    "build:prod": "node esbuild.mjs --production",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "typecheck": "tsc --noEmit",
+    "check:registry": "node scripts/check-registry.mjs",
+    "check": "npm run lint && npm run typecheck && npm run check:registry",
+    "l10n:extract": "npx @vscode/l10n-dev export --outDir ./l10n ./src",
+    "test": "node -e \"require('node:fs').rmSync('out',{recursive:true,force:true})\" && tsc -p tsconfig.test.json && node --test \"out/test/*.test.js\"",
+    "pretest:integration": "npm run build:prod && tsc -p tsconfig.test.json",
+    "test:integration": "vscode-test",
+    "vsix": "vsce package",
+    "vsix:publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^26.6.2",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "diff": "^9.0.0",
+    "serialize-javascript": "^7.1.2"
+  }
+}

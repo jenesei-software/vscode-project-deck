@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "types": ["node", "mocha"],
+    "noEmit": false,
+    "rootDir": "src",
+    "outDir": "out"
+  },
+  "include": [
+    "src/util/**/*.ts",
+    "src/model/**/*.ts",
+    "src/discovery/**/*.ts",
+    "src/services/**/*.ts",
+    "src/views/**/*.ts",
+    "src/config.ts",
+    "src/test/**/*.ts"
+  ],
+  "exclude": ["node_modules", "out", "dist"]
+}
