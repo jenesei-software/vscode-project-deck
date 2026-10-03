@@ -1,5 +1,6 @@
 import { baseName, isSubPath, parentDir, relativeSegments } from "../util/path";
-import type { GroupBy, ProjectView } from "./types";
+import { compareProjects } from "./ranking";
+import type { GroupBy, ProjectView, SortMode } from "./types";
 
 export const ALL_KEY = "__all__";
 export const UNTAGGED_KEY = "__untagged__";
@@ -34,12 +35,17 @@ export function pathGroupFor(
   }
 
   if (best) {
-    const segments = relativeSegments(best, rootPath);
-    const index = Math.min(Math.max(depth, 1), segments.length) - 1;
-    const segment = segments[index];
-    if (segment) {
-      return segment;
+    const base = baseName(best) || "Projects";
+    if (depth <= 0) {
+      return base;
     }
+    const segments = relativeSegments(best, rootPath);
+    const parents = segments.slice(0, -1);
+    if (parents.length === 0) {
+      return base;
+    }
+    const index = Math.min(depth, parents.length) - 1;
+    return parents[index] || base;
   }
 
   return baseName(parentDir(rootPath)) || baseName(rootPath) || "Projects";
@@ -88,4 +94,21 @@ export function groupProjects(
   return [...buckets.entries()]
     .sort((a, b) => a[0].localeCompare(b[0]))
     .map(([key, list]) => ({ key, label: key, projects: list }));
+}
+
+export function sortGroups(
+  groups: readonly ProjectGroup[],
+  sort: SortMode,
+): ProjectGroup[] {
+  return [...groups].sort((a, b) => {
+    const first = a.projects[0];
+    const second = b.projects[0];
+    if (first && second) {
+      const compared = compareProjects(first, second, sort);
+      if (compared !== 0) {
+        return compared;
+      }
+    }
+    return a.key.localeCompare(b.key);
+  });
 }

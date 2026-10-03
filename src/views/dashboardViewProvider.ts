@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { getConfig } from "../config";
-import { groupProjects } from "../model/grouping";
+import { groupProjects, sortGroups } from "../model/grouping";
 import { sortProjects } from "../model/ranking";
 import type { SortMode } from "../model/types";
 import type { Scanner } from "../services/scanner";
@@ -19,6 +19,7 @@ export interface DashboardHandlers {
   togglePin(id: string): void;
   editTags(id: string): void;
   setSort(sort: SortMode): void;
+  setGroupDepth(depth: number): void;
   refresh(): void;
 }
 
@@ -70,12 +71,16 @@ export class DashboardViewProvider implements vscode.WebviewViewProvider {
       multiTagGroups: config.multiTagGroups,
     });
     return {
-      groups: groups.map((group) => ({
+      type: "state",
+      groups: sortGroups(groups, config.sortList).map((group) => ({
         ...group,
         label: groupLabel(group.key),
       })),
       sort: config.sortList,
+      pathGroupDepth: config.pathGroupDepth,
       showGitStatus: config.showGitStatus,
+      collapseGroups: config.collapseGroups,
+      loading: !this.scanner.hasScanned(),
       strings: buildStrings(),
     };
   }
@@ -97,6 +102,10 @@ export class DashboardViewProvider implements vscode.WebviewViewProvider {
     }
     if (type === "setSort" && typeof message.sort === "string") {
       this.handlers.setSort(message.sort as SortMode);
+      return;
+    }
+    if (type === "setGroupDepth" && typeof message.depth === "number") {
+      this.handlers.setGroupDepth(message.depth);
       return;
     }
 
@@ -139,12 +148,14 @@ function buildStrings(): DashboardStrings {
     searchPlaceholder: t("Search projects"),
     empty: t("No projects yet. Add base folders in settings, then refresh."),
     noResults: t("No project matches your search."),
+    loading: t("Scanning projects…"),
     sort: t("Sort"),
     sortFrecency: t("Frecency"),
     sortAttention: t("Needs attention"),
     sortName: t("Name"),
     sortPath: t("Path"),
     sortRecent: t("Recent"),
+    groupDepth: t("Depth"),
     saved: t("saved"),
     detected: t("auto-detected"),
     clean: t("Clean"),

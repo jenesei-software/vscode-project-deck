@@ -1,6 +1,7 @@
 import { promises as fs } from "node:fs";
 import * as path from "node:path";
 import type { ProjectKind } from "../model/types";
+import { mapWithConcurrency } from "../util/concurrency";
 import { pathExists } from "../util/fs";
 import { globToRegExp, hasMagic, isIgnored } from "../util/glob";
 import { expandHome, normalize } from "../util/path";
@@ -75,25 +76,24 @@ async function walk(
     .readdir(dir, { withFileTypes: true })
     .catch(() => []);
 
-  for (const entry of entries) {
-    if (!entry.isDirectory() || entry.isSymbolicLink()) {
-      continue;
-    }
-    if (entry.name.startsWith(".")) {
-      continue;
-    }
-    if (isIgnored(entry.name, options.ignoredFolders)) {
-      continue;
-    }
-    await walk(
+  const children = entries.filter(
+    (entry) =>
+      entry.isDirectory() &&
+      !entry.isSymbolicLink() &&
+      !entry.name.startsWith(".") &&
+      !isIgnored(entry.name, options.ignoredFolders),
+  );
+
+  await mapWithConcurrency(children, 8, (entry) =>
+    walk(
       path.join(dir, entry.name),
       depth + 1,
       matcher,
       options,
       found,
       budget,
-    );
-  }
+    ),
+  );
 }
 
 async function markerKind(dir: string): Promise<ProjectKind | null> {

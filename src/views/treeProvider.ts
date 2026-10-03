@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { getConfig } from "../config";
-import { groupProjects } from "../model/grouping";
+import { groupProjects, sortGroups } from "../model/grouping";
 import { dirtyCount, sortProjects } from "../model/ranking";
 import type { ProjectView } from "../model/types";
 import type { Scanner } from "../services/scanner";
@@ -35,10 +35,10 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<DeckNode> {
 
   getTreeItem(node: DeckNode): vscode.TreeItem {
     if (node.type === "group") {
-      const item = new vscode.TreeItem(
-        node.label,
-        vscode.TreeItemCollapsibleState.Expanded,
-      );
+      const collapsible = getConfig().collapseGroups
+        ? vscode.TreeItemCollapsibleState.Collapsed
+        : vscode.TreeItemCollapsibleState.Expanded;
+      const item = new vscode.TreeItem(node.label, collapsible);
       item.contextValue = "projectDeck.group";
       item.description = String(node.projects.length);
       return item;
@@ -60,7 +60,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<DeckNode> {
         pathGroupDepth: config.pathGroupDepth,
         multiTagGroups: config.multiTagGroups,
       });
-      return groups.map((group) => ({
+      return sortGroups(groups, config.sortList).map((group) => ({
         type: "group",
         key: group.key,
         label: groupLabel(group.key),
@@ -81,16 +81,12 @@ function projectItem(project: ProjectView): vscode.TreeItem {
     project.name,
     vscode.TreeItemCollapsibleState.None,
   );
+  const pinState = project.pinned ? "pinned" : "unpinned";
   item.contextValue = project.favorite
-    ? "projectDeck.project.saved"
-    : "projectDeck.project.detected";
+    ? `projectDeck.project.saved.${pinState}`
+    : `projectDeck.project.detected.${pinState}`;
   item.tooltip = new vscode.MarkdownString(project.rootPath);
   item.iconPath = new vscode.ThemeIcon(project.git ? "git-branch" : "folder");
-  item.command = {
-    command: "projectDeck.open",
-    title: vscode.l10n.t("Open Project"),
-    arguments: [project.id],
-  };
 
   const parts: string[] = [];
   if (project.pinned) {
@@ -101,7 +97,7 @@ function projectItem(project: ProjectView): vscode.TreeItem {
   }
   const dirty = dirtyCount(project.git);
   if (dirty > 0) {
-    parts.push(`●${dirty}`);
+    parts.push(`● ${dirty}`);
   }
   item.description = parts.join(" ");
 

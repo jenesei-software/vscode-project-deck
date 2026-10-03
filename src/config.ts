@@ -11,6 +11,7 @@ export interface DeckConfig {
   multiTagGroups: boolean;
   sortList: SortMode;
   showGitStatus: boolean;
+  collapseGroups: boolean;
   concurrency: number;
   openInNewWindow: boolean;
   statusBar: boolean;
@@ -28,6 +29,7 @@ export function getConfig(): DeckConfig {
     multiTagGroups: config.get<boolean>("multiTagGroups", true),
     sortList: config.get<SortMode>("sortList", "frecency"),
     showGitStatus: config.get<boolean>("showGitStatus", true),
+    collapseGroups: config.get<boolean>("collapseGroups", false),
     concurrency: config.get<number>("concurrency", 6),
     openInNewWindow: config.get<boolean>("openInNewWindow", true),
     statusBar: config.get<boolean>("statusBar", true),
@@ -38,4 +40,11 @@ export async function setSortMode(sort: SortMode): Promise<void> {
   await vscode.workspace
     .getConfiguration("projectDeck")
     .update("sortList", sort, vscode.ConfigurationTarget.Global);
+}
+
+export async function setPathGroupDepth(depth: number): Promise<void> {
+  const value = Math.max(0, Math.min(10, Math.floor(depth)));
+  await vscode.workspace
+    .getConfiguration("projectDeck")
+    .update("pathGroupDepth", value, vscode.ConfigurationTarget.Global);
 }

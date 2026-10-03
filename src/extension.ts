@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { createActions, type DeckActions, registerCommands } from "./commands";
-import { getConfig, setSortMode } from "./config";
+import { getConfig, setPathGroupDepth, setSortMode } from "./config";
 import { GitService } from "./services/gitService";
 import { Scanner } from "./services/scanner";
 import { StateStore } from "./services/stateStore";
@@ -18,15 +18,34 @@ export async function activate(
   const store = new StateStore(context);
   const git = new GitService(getConfig().concurrency);
   const scanner = new Scanner(store, git);
-  const refresh = (): Promise<void> => scanner.refresh().then(() => undefined);
-
-  const tree = new ProjectTreeProvider(scanner);
-  context.subscriptions.push(
-    vscode.window.registerTreeDataProvider("projectDeck.groups", tree),
-  );
+  const refresh = (): Promise<void> =>
+    scanner.refresh().then(
+      () => undefined,
+      (error) => {
+        console.error("Project Deck scan failed", error);
+      },
+    );
 
   const actions: DeckActions = createActions({ scanner, store, refresh });
   registerCommands(context, actions);
+
+  // Never block activation on the scan: the views register instantly and the
+  // first result is pushed when it is ready.
+  void refresh();
+
+  const tree = new ProjectTreeProvider(scanner);
+  const treeView = vscode.window.createTreeView("projectDeck.groups", {
+    treeDataProvider: tree,
+    showCollapseAll: true,
+  });
+  context.subscriptions.push(treeView);
+  const updateTreeMessage = (): void => {
+    treeView.message = scanner.hasScanned()
+      ? undefined
+      : vscode.l10n.t("Scanning projects…");
+  };
+  scanner.onDidChange(updateTreeMessage);
+  updateTreeMessage();
 
   const handlers: DashboardHandlers = {
     open: (id) => void actions.open(id),
@@ -37,6 +56,9 @@ export async function activate(
     editTags: (id) => void actions.editTags(id),
     setSort: (sort) => {
       void setSortMode(sort);
+    },
+    setGroupDepth: (depth) => {
+      void setPathGroupDepth(depth);
     },
     refresh: () => void actions.refresh(),
   };
@@ -66,9 +88,6 @@ export async function activate(
 
   context.subscriptions.push(registerWatchers(scanner, git));
 
-  // Never block activation on the scan: the views register instantly and the
-  // first result is pushed when it is ready.
-  void refresh();
   updateStatus();
 }
 

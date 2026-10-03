@@ -38,14 +38,31 @@ export function registerWatchers(
 
   rebuild();
 
+  const discoveryKeys = [
+    "baseFolders",
+    "ignoredFolders",
+    "maxDepthRecursion",
+    "concurrency",
+    "showGitStatus",
+  ];
+
   disposables.push(
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (!event.affectsConfiguration("projectDeck")) {
         return;
       }
-      git.invalidate();
-      rebuild();
-      void scanner.refresh();
+      if (event.affectsConfiguration("projectDeck.baseFolders")) {
+        rebuild();
+      }
+      const needsScan = discoveryKeys.some((key) =>
+        event.affectsConfiguration(`projectDeck.${key}`),
+      );
+      if (needsScan) {
+        git.invalidate();
+        void scanner.refresh();
+      } else {
+        scanner.softRefresh();
+      }
     }),
   );
 

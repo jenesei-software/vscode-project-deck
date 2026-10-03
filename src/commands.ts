@@ -24,7 +24,7 @@ export interface DeckActions {
   openInNewWindow(id?: string): Promise<void>;
   switchProject(): Promise<void>;
   saveCurrent(): Promise<void>;
-  removeProject(): Promise<void>;
+  removeProject(id?: string): Promise<void>;
   togglePin(id?: string): Promise<void>;
   editTags(id?: string): Promise<void>;
   refresh(): Promise<void>;
@@ -141,22 +141,21 @@ export function createActions(deps: ActionDeps): DeckActions {
         favorite: true,
         createdAt: existing?.createdAt ?? Date.now(),
       });
-      await deps.refresh();
+      deps.scanner.softRefresh();
     },
-    removeProject: async () => {
-      const saved = deps.scanner
-        .getViews()
-        .filter((project) => project.favorite);
-      const project = await pickProject(
-        deps,
-        t("Pick a project to remove"),
-        saved,
-      );
+    removeProject: async (id) => {
+      let project = id ? deps.scanner.find(id) : undefined;
+      if (!project) {
+        const saved = deps.scanner
+          .getViews()
+          .filter((candidate) => candidate.favorite);
+        project = await pickProject(deps, t("Pick a project to remove"), saved);
+      }
       if (!project) {
         return;
       }
       await deps.store.removeProject(project.id);
-      await deps.refresh();
+      deps.scanner.softRefresh();
     },
     togglePin: async (id) => {
       const project = await resolve(id, t("Pick a project to pin or unpin"));
@@ -174,7 +173,7 @@ export function createActions(deps: ActionDeps): DeckActions {
       } else {
         await deps.store.upsertProject(toSaved(project, true, true));
       }
-      await deps.refresh();
+      deps.scanner.softRefresh();
     },
     editTags: async (id) => {
       const project = await resolve(id, t("Pick a project to tag"));
@@ -199,7 +198,7 @@ export function createActions(deps: ActionDeps): DeckActions {
         .find((candidate) => candidate.id === project.id);
       const base = existing ?? toSaved(project, true, project.pinned);
       await deps.store.upsertProject({ ...base, tags });
-      await deps.refresh();
+      deps.scanner.softRefresh();
     },
     refresh: async () => {
       await deps.refresh();
@@ -290,8 +289,10 @@ export function registerCommands(
   register("projectDeck.openInNewWindow", (id) => actions.openInNewWindow(id));
   register("projectDeck.switch", () => actions.switchProject());
   register("projectDeck.saveCurrent", () => actions.saveCurrent());
-  register("projectDeck.removeProject", () => actions.removeProject());
+  register("projectDeck.removeProject", (id) => actions.removeProject(id));
   register("projectDeck.togglePin", (id) => actions.togglePin(id));
+  register("projectDeck.pin", (id) => actions.togglePin(id));
+  register("projectDeck.unpin", (id) => actions.togglePin(id));
   register("projectDeck.editTags", (id) => actions.editTags(id));
   register("projectDeck.refresh", () => actions.refresh());
   register("projectDeck.reveal", (id) => actions.reveal(id));
@@ -346,7 +347,7 @@ function describe(project: ProjectView): string {
   }
   const dirty = dirtyCount(project.git);
   if (dirty > 0) {
-    parts.push(`●${dirty}`);
+    parts.push(`● ${dirty}`);
   }
   return parts.join("  ");
 }

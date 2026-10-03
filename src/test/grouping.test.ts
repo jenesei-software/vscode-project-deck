@@ -5,6 +5,7 @@ import {
   groupProjects,
   LOCAL_KEY,
   pathGroupFor,
+  sortGroups,
   UNTAGGED_KEY,
 } from "../model/grouping";
 import type { GitStatus, ProjectView } from "../model/types";
@@ -47,7 +48,46 @@ test("pathGroupFor picks the segment at the requested depth", () => {
   const base = "/git/library";
   const root = "/git/library/acme/repo";
   assert.equal(pathGroupFor(root, [base], 1), "acme");
-  assert.equal(pathGroupFor(root, [base], 2), "repo");
+  assert.equal(pathGroupFor(root, [base], 2), "acme");
+});
+
+test("pathGroupFor never uses the project folder itself as a group", () => {
+  const base = "/git/library";
+  const root = "/git/library/org/team/repo";
+  assert.equal(pathGroupFor(root, [base], 1), "org");
+  assert.equal(pathGroupFor(root, [base], 2), "team");
+  assert.equal(pathGroupFor(root, [base], 9), "team");
+});
+
+test("pathGroupFor with depth 0 groups by the base folder name", () => {
+  const base = "/git/library";
+  const root = "/git/library/acme/repo";
+  assert.equal(pathGroupFor(root, [base], 0), "library");
+  assert.equal(pathGroupFor(root, [base], -1), "library");
+});
+
+test("sortGroups orders groups by the sort mode of their first project", () => {
+  const dirty = view({
+    id: "dirty",
+    name: "dirty",
+    tags: ["B"],
+    git: { ...git(null), modified: 2 },
+  });
+  const clean = view({
+    id: "clean",
+    name: "clean",
+    tags: ["A"],
+    git: git(null),
+  });
+  const groups = groupProjects([clean, dirty], {
+    groupBy: "tag",
+    baseFolders: [],
+    pathGroupDepth: 1,
+    multiTagGroups: true,
+  });
+  const sorted = sortGroups(groups, "attention");
+  assert.equal(sorted[0].key, "B");
+  assert.equal(sorted[0].projects[0].id, "dirty");
 });
 
 test("tag grouping lists a project in every tag when enabled", () => {
