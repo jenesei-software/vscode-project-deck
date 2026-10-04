@@ -37,6 +37,6 @@
   "Select the Project Manager projects.json file": "选择 Project Manager 的 projects.json 文件",
   "No projects found in the selected file.": "所选文件中未找到项目。",
   "Imported {0} project(s) from Project Manager.": "已从 Project Manager 导入 {0} 个项目。",
-  "Save Project Deck projects": "保存 Project Deck 项目",
+  "Save Project Manager Hub projects": "保存 Project Manager Hub 项目",
   "Exported {0} project(s).": "已导出 {0} 个项目。"
 }

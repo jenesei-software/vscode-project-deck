@@ -15,7 +15,7 @@
   "command.openSettings": "Открыть настройки",
   "command.importFromProjectManager": "Импортировать из Project Manager",
   "command.exportJson": "Экспортировать проекты в JSON",
-  "config.title": "Project Deck",
+  "config.title": "Project Manager Hub",
   "config.baseFolders": "Папки или glob-шаблоны, в которых искать Git-репозитории и файлы `.code-workspace`.",
   "config.ignoredFolders": "Имена папок или glob-шаблоны, пропускаемые при сканировании.",
   "config.maxDepthRecursion": "Насколько глубоко сканер заходит в каждую базовую папку.",

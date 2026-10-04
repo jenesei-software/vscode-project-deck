@@ -37,6 +37,6 @@
   "Select the Project Manager projects.json file": "Select the Project Manager projects.json file",
   "No projects found in the selected file.": "No projects found in the selected file.",
   "Imported {0} project(s) from Project Manager.": "Imported {0} project(s) from Project Manager.",
-  "Save Project Deck projects": "Save Project Deck projects",
+  "Save Project Manager Hub projects": "Save Project Manager Hub projects",
   "Exported {0} project(s).": "Exported {0} project(s)."
 }

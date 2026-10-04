@@ -1,10 +1,10 @@
 import * as assert from "node:assert";
 import * as vscode from "vscode";
 
-suite("Project Deck", () => {
+suite("Project Manager Hub", () => {
   test("extension is available", () => {
     const extension = vscode.extensions.getExtension(
-      "jenesei-software.project-deck",
+      "jenesei-software.project-manager-hub",
     );
     assert.ok(extension, "extension should be installed in the test host");
   });
@@ -18,7 +18,7 @@ suite("Project Deck", () => {
 
   test("commands are registered", async () => {
     const extension = vscode.extensions.getExtension(
-      "jenesei-software.project-deck",
+      "jenesei-software.project-manager-hub",
     );
     await extension?.activate();
     const commands = await vscode.commands.getCommands(true);

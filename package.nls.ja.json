@@ -15,7 +15,7 @@
   "command.openSettings": "設定を開く",
   "command.importFromProjectManager": "Project Manager からインポート",
   "command.exportJson": "プロジェクトを JSON にエクスポート",
-  "config.title": "Project Deck",
+  "config.title": "Project Manager Hub",
   "config.baseFolders": "Git リポジトリと `.code-workspace` ファイルを検索するフォルダーまたは glob パターン。",
   "config.ignoredFolders": "スキャン時にスキップするフォルダー名または glob パターン。",
   "config.maxDepthRecursion": "スキャナーが各ベースフォルダーをどこまで深く調べるか。",

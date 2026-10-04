@@ -22,7 +22,7 @@ export async function activate(
     scanner.refresh(force).then(
       () => undefined,
       (error) => {
-        console.error("Project Deck scan failed", error);
+        console.error("Project Manager Hub scan failed", error);
       },
     );
 

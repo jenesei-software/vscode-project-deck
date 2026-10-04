@@ -216,8 +216,10 @@ export function createActions(deps: ActionDeps): DeckActions {
     },
     exportProjects: async () => {
       const target = await vscode.window.showSaveDialog({
-        title: t("Save Project Deck projects"),
-        defaultUri: vscode.Uri.file(joinPath(homedir(), "project-deck.json")),
+        title: t("Save Project Manager Hub projects"),
+        defaultUri: vscode.Uri.file(
+          joinPath(homedir(), "project-manager-hub.json"),
+        ),
         filters: { JSON: ["json"] },
       });
       if (!target) {

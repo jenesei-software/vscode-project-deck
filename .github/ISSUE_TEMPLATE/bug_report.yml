@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a problem with Project Deck
+description: Report a problem with Project Manager Hub
 title: "[Bug]: "
 labels: ["bug"]
 body:
@@ -19,7 +19,7 @@ body:
   - type: input
     id: extension-version
     attributes:
-      label: Project Deck version
+      label: Project Manager Hub version
     validations:
       required: true
   - type: input
@@ -38,6 +38,6 @@ body:
     id: logs
     attributes:
       label: Output log
-      description: Copy the "Project Deck" output channel contents if relevant.
+      description: Copy the "Project Manager Hub" output channel contents if relevant.
     validations:
       required: false

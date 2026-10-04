@@ -37,6 +37,6 @@
   "Select the Project Manager projects.json file": "Project Manager の projects.json ファイルを選択",
   "No projects found in the selected file.": "選択したファイルにプロジェクトが見つかりません。",
   "Imported {0} project(s) from Project Manager.": "Project Manager から {0} 件のプロジェクトをインポートしました。",
-  "Save Project Deck projects": "Project Deck プロジェクトを保存",
+  "Save Project Manager Hub projects": "Project Manager Hub プロジェクトを保存",
   "Exported {0} project(s).": "{0} 件のプロジェクトをエクスポートしました。"
 }

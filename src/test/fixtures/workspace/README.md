@@ -1,1 +1,1 @@
-# Fixture workspace for Project Deck integration tests.
+# Fixture workspace for Project Manager Hub integration tests.

@@ -37,6 +37,6 @@
   "Select the Project Manager projects.json file": "Selecciona el archivo projects.json de Project Manager",
   "No projects found in the selected file.": "No se encontraron proyectos en el archivo seleccionado.",
   "Imported {0} project(s) from Project Manager.": "Se importaron {0} proyecto(s) desde Project Manager.",
-  "Save Project Deck projects": "Guardar proyectos de Project Deck",
+  "Save Project Manager Hub projects": "Guardar proyectos de Project Manager Hub",
   "Exported {0} project(s).": "Se exportaron {0} proyecto(s)."
 }

@@ -37,7 +37,7 @@ npm run check             # lint + typecheck + registry
 
 1. Open the repository in VS Code.
 2. Press `F5` to launch the Extension Development Host.
-3. Find **Project Deck** in the Activity Bar.
+3. Find **Project Manager Hub** in the Activity Bar.
 
 ## Project layout
 

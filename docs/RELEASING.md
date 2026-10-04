@@ -1,4 +1,4 @@
-# Releasing Project Deck
+# Releasing Project Manager Hub
 
 Maintainer notes. The version lives in `package.json` and follows
 [Semantic Versioning](https://semver.org/); every release is tagged `vX.Y.Z` and

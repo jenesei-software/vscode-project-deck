@@ -15,7 +15,7 @@
   "command.openSettings": "打开设置",
   "command.importFromProjectManager": "从 Project Manager 导入",
   "command.exportJson": "将项目导出为 JSON",
-  "config.title": "Project Deck",
+  "config.title": "Project Manager Hub",
   "config.baseFolders": "用于扫描 Git 仓库和 `.code-workspace` 文件的文件夹或 glob 模式。",
   "config.ignoredFolders": "扫描时跳过的文件夹名称或 glob 模式。",
   "config.maxDepthRecursion": "扫描器在每个基础文件夹中查找的深度。",

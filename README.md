@@ -1,11 +1,11 @@
-# Project Deck
+# Project Manager Hub
 
-[![Marketplace](https://img.shields.io/badge/Marketplace-Project%20Deck-007ACC?logo=visualstudiocode&logoColor=white)](https://marketplace.visualstudio.com/items?itemName=jenesei-software.project-deck)
+[![Marketplace](https://img.shields.io/badge/Marketplace-Project%20Manager%20Hub-007ACC?logo=visualstudiocode&logoColor=white)](https://marketplace.visualstudio.com/items?itemName=jenesei-software.project-manager-hub)
 [![Version](https://img.shields.io/badge/version-0.0.1-2ea44f)](CHANGELOG.md)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-2ea44f)](package.json)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-Project Deck is a git-aware project hub. Instead of a flat list of repository
+Project Manager Hub is a git-aware project hub. Instead of a flat list of repository
 names, it shows the state of every project at a glance - branch, ahead/behind,
 working-tree changes and the last commit - ranks them by how recently and often
 you actually use them, and groups them by folder, tag or remote.
@@ -53,12 +53,12 @@ _Coming soon._
 
 ## Installation
 
-Install **Project Deck** from the Visual Studio Marketplace, or run
+Install **Project Manager Hub** from the Visual Studio Marketplace, or run
 `npm run vsix` and install the generated `.vsix`.
 
 ## Getting started
 
-1. Open the **Project Deck** view in the Activity Bar.
+1. Open the **Project Manager Hub** view in the Activity Bar.
 2. Add one or more folders to `projectDeck.baseFolders` in settings.
 3. Open the **Dashboard** or the **Projects** tree and refresh.
 4. Pin, tag or open projects from the tree context menu.
@@ -84,13 +84,13 @@ Install **Project Deck** from the Visual Studio Marketplace, or run
 
 | Command | Description |
 | --- | --- |
-| `Project Deck: Open Project` | Open a project in the current window. |
-| `Project Deck: Open Project in New Window` | Open a project in a new window. |
-| `Project Deck: Switch Project` | Fuzzy switch with status inline. |
-| `Project Deck: Save Current Project` | Save the current folder as a project. |
-| `Project Deck: Refresh Projects` | Re-scan and refresh Git status. |
-| `Project Deck: Import from Project Manager` | Import favorites from Project Manager. |
-| `Project Deck: Export Projects to JSON` | Export saved projects. |
+| `Project Manager Hub: Open Project` | Open a project in the current window. |
+| `Project Manager Hub: Open Project in New Window` | Open a project in a new window. |
+| `Project Manager Hub: Switch Project` | Fuzzy switch with status inline. |
+| `Project Manager Hub: Save Current Project` | Save the current folder as a project. |
+| `Project Manager Hub: Refresh Projects` | Re-scan and refresh Git status. |
+| `Project Manager Hub: Import from Project Manager` | Import favorites from Project Manager. |
+| `Project Manager Hub: Export Projects to JSON` | Export saved projects. |
 
 ## Security
 
@@ -100,7 +100,7 @@ Install **Project Deck** from the Visual Studio Marketplace, or run
 
 ## Support the project
 
-Project Deck is free and open source. If it is useful to you:
+Project Manager Hub is free and open source. If it is useful to you:
 
 - ⭐ **Star the repository on [GitHub](https://github.com/jenesei-software/vscode-project-deck)** — it helps other people find it.
 - ☕ **[DonationAlerts](https://www.donationalerts.com/r/cyrilstrone)** — a one-time donation keeps the project alive.

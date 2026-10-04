@@ -64,16 +64,16 @@ jobs:
           git push origin "v$VERSION"
 
       - name: Package extension
-        run: npx @vscode/vsce package --out "project-deck-$VERSION.vsix"
+        run: npx @vscode/vsce package --out "project-manager-hub-$VERSION.vsix"
 
       - name: Publish to Visual Studio Marketplace
         if: env.VSCE_PAT != ''
-        run: npx @vscode/vsce publish --packagePath "project-deck-$VERSION.vsix"
+        run: npx @vscode/vsce publish --packagePath "project-manager-hub-$VERSION.vsix"
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
         with:
           tag_name: v${{ env.VERSION }}
-          name: Project Deck v${{ env.VERSION }}
+          name: Project Manager Hub v${{ env.VERSION }}
           generate_release_notes: true
-          files: project-deck-${{ env.VERSION }}.vsix
+          files: project-manager-hub-${{ env.VERSION }}.vsix
