@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
-import { getConfig } from "../config";
+import { readDeckConfig } from "../config";
 import { groupProjects, sortGroups } from "../model/grouping";
 import { sortProjects } from "../model/ranking";
 import type { SortMode } from "../model/types";
-import type { Scanner } from "../services/scanner";
-import type { StateStore } from "../services/stateStore";
+import type { Scanner } from "../services/scannerService";
+import type { StateStore } from "../services/stateStoreService";
 import { groupLabel } from "./groupLabel";
 import {
   type DashboardState,
@@ -64,7 +64,7 @@ export class DashboardViewProvider implements vscode.WebviewViewProvider {
   }
 
   private buildState(): DashboardState {
-    const config = getConfig();
+    const config = readDeckConfig();
     const sorted = sortProjects(this.scanner.getViews(), config.sortList);
     const groups = groupProjects(sorted, {
       groupBy: config.groupBy,

@@ -1,12 +1,12 @@
 import { homedir } from "node:os";
 import * as vscode from "vscode";
-import { getConfig } from "../config";
+import { readDeckConfig } from "../config";
 import { type DiscoveredProject, locateProjects } from "../discovery/locator";
 import { mergeSources } from "../discovery/merge";
 import { frecencyScore } from "../model/ranking";
 import type { GitStatus, ProjectView } from "../model/types";
 import type { GitService } from "./gitService";
-import type { StateStore } from "./stateStore";
+import type { StateStore } from "./stateStoreService";
 
 export class Scanner {
   private views: ProjectView[] = [];
@@ -45,7 +45,7 @@ export class Scanner {
     }
     this.scanning = true;
     try {
-      const config = getConfig();
+      const config = readDeckConfig();
       this.git.setConcurrency(config.concurrency);
       if (force) {
         this.git.invalidate();

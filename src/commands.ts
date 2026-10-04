@@ -1,6 +1,6 @@
 import { homedir } from "node:os";
 import * as vscode from "vscode";
-import { getConfig } from "./config";
+import { readDeckConfig } from "./config";
 import { idFromPath } from "./discovery/merge";
 import {
   type ImportedProject,
@@ -8,8 +8,8 @@ import {
 } from "./discovery/pmImport";
 import { dirtyCount, sortProjects } from "./model/ranking";
 import type { Project, ProjectView } from "./model/types";
-import type { Scanner } from "./services/scanner";
-import type { StateStore } from "./services/stateStore";
+import type { Scanner } from "./services/scannerService";
+import type { StateStore } from "./services/stateStoreService";
 import { pathExists } from "./util/fs";
 import { joinPath, pathKey } from "./util/path";
 
@@ -87,7 +87,7 @@ export function createActions(deps: ActionDeps): DeckActions {
       }
     },
     switchProject: async () => {
-      const config = getConfig();
+      const config = readDeckConfig();
       const views = sortProjects(deps.scanner.getViews(), "frecency");
       if (views.length === 0) {
         void vscode.window.showInformationMessage(

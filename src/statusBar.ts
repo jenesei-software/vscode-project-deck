@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import type { ProjectView } from "./model/types";
 
-export class StatusBar {
+export class StatusBar implements vscode.Disposable {
   private readonly item: vscode.StatusBarItem;
 
   constructor() {

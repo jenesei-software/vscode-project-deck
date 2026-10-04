@@ -1,9 +1,9 @@
 import * as vscode from "vscode";
-import { getConfig } from "../config";
+import { readDeckConfig } from "../config";
 import { groupProjects, sortGroups } from "../model/grouping";
 import { dirtyCount, sortProjects } from "../model/ranking";
 import type { ProjectView } from "../model/types";
-import type { Scanner } from "../services/scanner";
+import type { Scanner } from "../services/scannerService";
 import { groupLabel } from "./groupLabel";
 
 type ProjectNode = {
@@ -35,7 +35,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<DeckNode> {
 
   getTreeItem(node: DeckNode): vscode.TreeItem {
     if (node.type === "group") {
-      const collapsible = getConfig().collapseGroups
+      const collapsible = readDeckConfig().collapseGroups
         ? vscode.TreeItemCollapsibleState.Collapsed
         : vscode.TreeItemCollapsibleState.Expanded;
       const item = new vscode.TreeItem(node.label, collapsible);
@@ -48,7 +48,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<DeckNode> {
   }
 
   getChildren(node?: DeckNode): DeckNode[] {
-    const config = getConfig();
+    const config = readDeckConfig();
     const sorted = sortProjects(this.scanner.getViews(), config.sortList);
 
     if (!node) {

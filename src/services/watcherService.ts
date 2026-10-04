@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
-import { getConfig } from "../config";
+import { readDeckConfig } from "../config";
 import { hasMagic } from "../util/glob";
 import type { GitService } from "./gitService";
-import type { Scanner } from "./scanner";
+import type { Scanner } from "./scannerService";
 
 export function registerWatchers(
   scanner: Scanner,
@@ -17,7 +17,7 @@ export function registerWatchers(
     }
     watchers = [];
 
-    const config = getConfig();
+    const config = readDeckConfig();
     for (const base of config.baseFolders) {
       if (!base || hasMagic(base)) {
         continue;

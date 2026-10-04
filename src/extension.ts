@@ -1,22 +1,22 @@
 import * as vscode from "vscode";
 import { createActions, type DeckActions, registerCommands } from "./commands";
-import { getConfig, setPathGroupDepth, setSortMode } from "./config";
+import { readDeckConfig, setPathGroupDepth, setSortMode } from "./config";
 import { GitService } from "./services/gitService";
-import { Scanner } from "./services/scanner";
-import { StateStore } from "./services/stateStore";
-import { registerWatchers } from "./services/watcher";
+import { Scanner } from "./services/scannerService";
+import { StateStore } from "./services/stateStoreService";
+import { registerWatchers } from "./services/watcherService";
 import { StatusBar } from "./statusBar";
 import {
   type DashboardHandlers,
   DashboardViewProvider,
 } from "./views/dashboardViewProvider";
-import { ProjectTreeProvider } from "./views/treeProvider";
+import { ProjectTreeProvider } from "./views/projectTreeProvider";
 
 export async function activate(
   context: vscode.ExtensionContext,
 ): Promise<void> {
   const store = new StateStore(context);
-  const git = new GitService(getConfig().concurrency);
+  const git = new GitService(readDeckConfig().concurrency);
   const scanner = new Scanner(store, git);
   const refresh = (force = false): Promise<void> =>
     scanner.refresh(force).then(
@@ -80,7 +80,7 @@ export async function activate(
   const statusBar = new StatusBar();
   context.subscriptions.push(statusBar);
   const updateStatus = (): void => {
-    statusBar.update(scanner.getViews(), getConfig().statusBar);
+    statusBar.update(scanner.getViews(), readDeckConfig().statusBar);
   };
   scanner.onDidChange(updateStatus);
   context.subscriptions.push(
@@ -93,5 +93,5 @@ export async function activate(
 }
 
 export function deactivate(): void {
-  // no-op
+  // Disposables are released through the extension context.
 }
