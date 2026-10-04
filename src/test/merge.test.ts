@@ -23,7 +23,6 @@ test("mergeSources keeps saved metadata and marks detected ones", () => {
       kind: "git",
       tags: ["Work"],
       pinned: true,
-      favorite: true,
       createdAt: 1,
     },
   ];
@@ -39,7 +38,7 @@ test("mergeSources keeps saved metadata and marks detected ones", () => {
 
   const other = merged.find((project) => project.rootPath === "/git/lib/other");
   assert.equal(other?.detected, true);
-  assert.equal(other?.favorite, false);
+  assert.equal(other?.pinned, false);
 });
 
 test("idFromPath is stable", () => {

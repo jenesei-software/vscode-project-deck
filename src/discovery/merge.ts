@@ -54,7 +54,6 @@ export function mergeSources(
       kind: project.kind,
       tags: [],
       pinned: false,
-      favorite: false,
       createdAt: 0,
       detected: true,
     });

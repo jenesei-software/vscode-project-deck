@@ -40,6 +40,7 @@
   },
   "l10n": "./l10n",
   "activationEvents": [
+    "onStartupFinished",
     "onView:projectDeck.dashboard",
     "onView:projectDeck.groups"
   ],
@@ -85,12 +86,6 @@
         "command": "projectDeck.switch",
         "title": "%command.switch%",
         "category": "Project Deck"
-      },
-      {
-        "command": "projectDeck.saveCurrent",
-        "title": "%command.saveCurrent%",
-        "category": "Project Deck",
-        "icon": "$(add)"
       },
       {
         "command": "projectDeck.removeProject",
@@ -155,11 +150,6 @@
     "menus": {
       "view/title": [
         {
-          "command": "projectDeck.saveCurrent",
-          "when": "view == projectDeck.groups",
-          "group": "navigation@1"
-        },
-        {
           "command": "projectDeck.refresh",
           "when": "view =~ /^projectDeck\\./",
           "group": "navigation@2"
@@ -208,7 +198,7 @@
         },
         {
           "command": "projectDeck.removeProject",
-          "when": "view == projectDeck.groups && viewItem =~ /saved/",
+          "when": "view == projectDeck.groups && viewItem =~ /^projectDeck\\.project/",
           "group": "3_remove@1"
         }
       ],
@@ -306,18 +296,6 @@
           "scope": "window",
           "markdownDescription": "%config.pathGroupDepth%"
         },
-        "projectDeck.tags": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [
-            "Personal",
-            "Work"
-          ],
-          "scope": "window",
-          "markdownDescription": "%config.tags%"
-        },
         "projectDeck.multiTagGroups": {
           "type": "boolean",
           "default": true,
@@ -331,7 +309,8 @@
             "attention",
             "name",
             "path",
-            "recent"
+            "recent",
+            "tag"
           ],
           "default": "frecency",
           "scope": "window",
@@ -351,7 +330,7 @@
         },
         "projectDeck.concurrency": {
           "type": "number",
-          "default": 6,
+          "default": 12,
           "minimum": 1,
           "maximum": 32,
           "scope": "window",

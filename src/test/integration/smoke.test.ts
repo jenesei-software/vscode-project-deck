@@ -17,6 +17,10 @@ suite("Project Deck", () => {
   });
 
   test("commands are registered", async () => {
+    const extension = vscode.extensions.getExtension(
+      "jenesei-software.project-deck",
+    );
+    await extension?.activate();
     const commands = await vscode.commands.getCommands(true);
     assert.ok(commands.includes("projectDeck.refresh"));
     assert.ok(commands.includes("projectDeck.switch"));

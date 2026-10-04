@@ -7,7 +7,6 @@ export interface DeckConfig {
   maxDepthRecursion: number;
   groupBy: GroupBy;
   pathGroupDepth: number;
-  tags: string[];
   multiTagGroups: boolean;
   sortList: SortMode;
   showGitStatus: boolean;
@@ -25,12 +24,11 @@ export function getConfig(): DeckConfig {
     maxDepthRecursion: config.get<number>("maxDepthRecursion", 3),
     groupBy: config.get<GroupBy>("groupBy", "path"),
     pathGroupDepth: config.get<number>("pathGroupDepth", 1),
-    tags: config.get<string[]>("tags", []),
     multiTagGroups: config.get<boolean>("multiTagGroups", true),
     sortList: config.get<SortMode>("sortList", "frecency"),
     showGitStatus: config.get<boolean>("showGitStatus", true),
     collapseGroups: config.get<boolean>("collapseGroups", false),
-    concurrency: config.get<number>("concurrency", 6),
+    concurrency: config.get<number>("concurrency", 12),
     openInNewWindow: config.get<boolean>("openInNewWindow", true),
     statusBar: config.get<boolean>("statusBar", true),
   };

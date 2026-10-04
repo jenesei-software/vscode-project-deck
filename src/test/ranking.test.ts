@@ -35,9 +35,8 @@ function view(overrides: Partial<ProjectView>): ProjectView {
     name: overrides.name ?? "project",
     rootPath: overrides.rootPath ?? "/tmp/project",
     kind: "git",
-    tags: [],
+    tags: overrides.tags ?? [],
     pinned: overrides.pinned ?? false,
-    favorite: false,
     createdAt: 0,
     detected: false,
     git: overrides.git ?? null,
@@ -80,4 +79,15 @@ test("frecency sorting is descending", () => {
   const high = view({ id: "high", frecency: 90 });
   const sorted = sortProjects([low, high], "frecency");
   assert.equal(sorted[0].id, "high");
+});
+
+test("tag sorting puts tagged projects first by first tag", () => {
+  const none = view({ id: "none", name: "a" });
+  const work = view({ id: "work", name: "z", tags: ["Work"] });
+  const home = view({ id: "home", name: "b", tags: ["Home"] });
+  const sorted = sortProjects([none, work, home], "tag");
+  assert.deepEqual(
+    sorted.map((project) => project.id),
+    ["home", "work", "none"],
+  );
 });

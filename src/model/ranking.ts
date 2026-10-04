@@ -54,6 +54,20 @@ export function compareProjects(
       return a.rootPath.localeCompare(b.rootPath);
     case "recent":
       return b.lastOpenedAt - a.lastOpenedAt || a.name.localeCompare(b.name);
+    case "tag": {
+      const at = a.tags[0] ?? "";
+      const bt = b.tags[0] ?? "";
+      if (at !== bt) {
+        if (!at) {
+          return 1;
+        }
+        if (!bt) {
+          return -1;
+        }
+        return at.localeCompare(bt);
+      }
+      return a.name.localeCompare(b.name);
+    }
     case "attention": {
       const flagged =
         Number(needsAttention(b.git)) - Number(needsAttention(a.git));

@@ -16,14 +16,13 @@ import { joinPath, pathKey } from "./util/path";
 export interface ActionDeps {
   scanner: Scanner;
   store: StateStore;
-  refresh: () => Promise<void>;
+  refresh: (force?: boolean) => Promise<void>;
 }
 
 export interface DeckActions {
   open(id?: string): Promise<void>;
   openInNewWindow(id?: string): Promise<void>;
   switchProject(): Promise<void>;
-  saveCurrent(): Promise<void>;
   removeProject(id?: string): Promise<void>;
   togglePin(id?: string): Promise<void>;
   editTags(id?: string): Promise<void>;
@@ -114,43 +113,10 @@ export function createActions(deps: ActionDeps): DeckActions {
         await openProject(project, config.openInNewWindow);
       }
     },
-    saveCurrent: async () => {
-      const folder = vscode.workspace.workspaceFolders?.[0];
-      if (!folder) {
-        return;
-      }
-      const rootPath = folder.uri.fsPath;
-      const stored = deps.store.getProjects();
-      const existing = stored.find(
-        (project) => pathKey(project.rootPath) === pathKey(rootPath),
-      );
-      const name = await vscode.window.showInputBox({
-        prompt: t("Project name"),
-        value: existing?.name ?? folder.name,
-      });
-      if (!name) {
-        return;
-      }
-      await deps.store.upsertProject({
-        id: existing?.id ?? idFromPath(rootPath),
-        name,
-        rootPath,
-        kind: existing?.kind ?? "git",
-        tags: existing?.tags ?? [],
-        pinned: existing?.pinned ?? false,
-        favorite: true,
-        createdAt: existing?.createdAt ?? Date.now(),
-      });
-      deps.scanner.softRefresh();
-    },
     removeProject: async (id) => {
-      let project = id ? deps.scanner.find(id) : undefined;
-      if (!project) {
-        const saved = deps.scanner
-          .getViews()
-          .filter((candidate) => candidate.favorite);
-        project = await pickProject(deps, t("Pick a project to remove"), saved);
-      }
+      const project = id
+        ? deps.scanner.find(id)
+        : await pickProject(deps, t("Pick a project to remove"));
       if (!project) {
         return;
       }
@@ -166,12 +132,14 @@ export function createActions(deps: ActionDeps): DeckActions {
         .getProjects()
         .find((candidate) => candidate.id === project.id);
       if (existing) {
-        await deps.store.upsertProject({
-          ...existing,
-          pinned: !existing.pinned,
-        });
+        const pinned = !existing.pinned;
+        if (!pinned && existing.tags.length === 0) {
+          await deps.store.removeProject(existing.id);
+        } else {
+          await deps.store.upsertProject({ ...existing, pinned });
+        }
       } else {
-        await deps.store.upsertProject(toSaved(project, true, true));
+        await deps.store.upsertProject(toSaved(project, true));
       }
       deps.scanner.softRefresh();
     },
@@ -180,11 +148,9 @@ export function createActions(deps: ActionDeps): DeckActions {
       if (!project) {
         return;
       }
-      const config = getConfig();
       const value = await vscode.window.showInputBox({
         prompt: t("Tags (comma separated)"),
         value: project.tags.join(", "),
-        placeHolder: config.tags.join(", "),
       });
       if (value === undefined) {
         return;
@@ -196,12 +162,12 @@ export function createActions(deps: ActionDeps): DeckActions {
       const existing = deps.store
         .getProjects()
         .find((candidate) => candidate.id === project.id);
-      const base = existing ?? toSaved(project, true, project.pinned);
+      const base = existing ?? toSaved(project, project.pinned);
       await deps.store.upsertProject({ ...base, tags });
       deps.scanner.softRefresh();
     },
     refresh: async () => {
-      await deps.refresh();
+      await deps.refresh(true);
     },
     reveal: async (id) => {
       const project = await resolve(id, t("Pick a project"));
@@ -243,7 +209,7 @@ export function createActions(deps: ActionDeps): DeckActions {
         added++;
       }
       await deps.store.setProjects(saved);
-      await deps.refresh();
+      await deps.refresh(true);
       void vscode.window.showInformationMessage(
         t("Imported {0} project(s) from Project Manager.", added),
       );
@@ -288,7 +254,6 @@ export function registerCommands(
   register("projectDeck.open", (id) => actions.open(id));
   register("projectDeck.openInNewWindow", (id) => actions.openInNewWindow(id));
   register("projectDeck.switch", () => actions.switchProject());
-  register("projectDeck.saveCurrent", () => actions.saveCurrent());
   register("projectDeck.removeProject", (id) => actions.removeProject(id));
   register("projectDeck.togglePin", (id) => actions.togglePin(id));
   register("projectDeck.pin", (id) => actions.togglePin(id));
@@ -352,11 +317,7 @@ function describe(project: ProjectView): string {
   return parts.join("  ");
 }
 
-function toSaved(
-  project: ProjectView,
-  favorite: boolean,
-  pinned: boolean,
-): Project {
+function toSaved(project: ProjectView, pinned: boolean): Project {
   return {
     id: project.id,
     name: project.name,
@@ -365,7 +326,6 @@ function toSaved(
     tags: project.tags,
     group: project.group,
     pinned,
-    favorite,
     createdAt: project.createdAt || Date.now(),
   };
 }
@@ -378,7 +338,6 @@ function toImported(item: ImportedProject): Project {
     kind: "git",
     tags: item.tags,
     pinned: false,
-    favorite: true,
     createdAt: Date.now(),
   };
 }

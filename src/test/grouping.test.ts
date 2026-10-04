@@ -35,7 +35,6 @@ function view(overrides: Partial<ProjectView>): ProjectView {
     kind: "git",
     tags: overrides.tags ?? [],
     pinned: false,
-    favorite: false,
     createdAt: 0,
     detected: false,
     git: overrides.git ?? null,

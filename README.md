@@ -20,13 +20,13 @@ Everything is local: no network, no tokens, read-only Git queries.
   modified / untracked / conflicted counts and the last commit.
 - **Frecency ranking** — the projects you use most and most recently rise to the
   top, with pinned projects always first.
-- **Sorting** — Frecency, Needs attention, Name, Path or Recent.
+- **Sorting** — Frecency, Needs attention, Name, Path, Recent or Tag.
 - **Grouping** — by path segment below a base folder (default), by tag, by
   remote organization, or none.
 - **Keyboard-first switching** — a fuzzy QuickPick that opens with MRU order and
   shows branch/status inline.
 - **Dashboard + tree** — a rich webview dashboard and a native project tree.
-- **Project Manager import** — bring your existing favorites across in one step.
+- **Project Manager import** — bring your existing projects across in one step.
 - **Settings Sync** — your project list, tags and frecency travel between
   machines automatically; no files to manage.
 
@@ -38,8 +38,8 @@ _Coming soon._
 
 - Base folders and all preferences are regular VS Code settings, so they sync
   through Settings Sync.
-- Projects you save, their tags and pins, plus frecency data, live in VS Code
-  global state and are registered with `setKeysForSync`, so they sync too.
+- Project tags, pins and frecency data live in VS Code global state and are
+  registered with `setKeysForSync`, so they sync too.
 - For each project the extension runs `git status --porcelain=v2 --branch`,
   `git log -1` and reads `remote.origin.url`. It never writes to a repository,
   never runs hooks, and inspects at most a bounded number of repositories in
@@ -60,11 +60,11 @@ _Coming soon._
 | `projectDeck.maxDepthRecursion` | `3` | Scan depth per base folder. |
 | `projectDeck.groupBy` | `path` | `path`, `tag`, `org` or `none`. |
 | `projectDeck.pathGroupDepth` | `1` | Path segment used as the group name. |
-| `projectDeck.tags` | `Personal`, `Work` | Tags offered when tagging projects. |
 | `projectDeck.multiTagGroups` | `true` | List a project in every tag group. |
-| `projectDeck.sortList` | `frecency` | `frecency`, `attention`, `name`, `path`, `recent`. |
+| `projectDeck.sortList` | `frecency` | `frecency`, `attention`, `name`, `path`, `recent`, `tag`. |
 | `projectDeck.showGitStatus` | `true` | Show Git state on projects. |
-| `projectDeck.concurrency` | `6` | Repositories inspected in parallel. |
+| `projectDeck.collapseGroups` | `false` | Collapse groups by default. |
+| `projectDeck.concurrency` | `12` | Repositories inspected in parallel. |
 | `projectDeck.openInNewWindow` | `true` | Open projects in a new window. |
 | `projectDeck.statusBar` | `true` | Current project and branch in the status bar. |
 
@@ -75,10 +75,9 @@ _Coming soon._
 | `Project Deck: Open Project` | Open a project in the current window. |
 | `Project Deck: Open Project in New Window` | Open a project in a new window. |
 | `Project Deck: Switch Project` | Fuzzy switch with status inline. |
-| `Project Deck: Save Current Project` | Save the current folder as a project. |
 | `Project Deck: Refresh Projects` | Re-scan and refresh Git status. |
-| `Project Deck: Import from Project Manager` | Import favorites from Project Manager. |
-| `Project Deck: Export Projects to JSON` | Export saved projects. |
+| `Project Deck: Import from Project Manager` | Import projects from Project Manager. |
+| `Project Deck: Export Projects to JSON` | Export projects. |
 
 ## Security
 

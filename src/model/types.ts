@@ -1,6 +1,12 @@
 export type ProjectKind = "git" | "workspace" | "folder";
 
-export type SortMode = "frecency" | "attention" | "name" | "path" | "recent";
+export type SortMode =
+  | "frecency"
+  | "attention"
+  | "name"
+  | "path"
+  | "recent"
+  | "tag";
 
 export type GroupBy = "path" | "tag" | "org" | "none";
 
@@ -34,7 +40,6 @@ export interface Project {
   tags: string[];
   group?: string;
   pinned: boolean;
-  favorite: boolean;
   createdAt: number;
 }
 

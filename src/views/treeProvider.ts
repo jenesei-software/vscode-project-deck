@@ -39,6 +39,7 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<DeckNode> {
         ? vscode.TreeItemCollapsibleState.Collapsed
         : vscode.TreeItemCollapsibleState.Expanded;
       const item = new vscode.TreeItem(node.label, collapsible);
+      item.id = `group:${node.key}`;
       item.contextValue = "projectDeck.group";
       item.description = String(node.projects.length);
       return item;
@@ -81,16 +82,15 @@ function projectItem(project: ProjectView): vscode.TreeItem {
     project.name,
     vscode.TreeItemCollapsibleState.None,
   );
+  item.id = `project:${project.id}`;
   const pinState = project.pinned ? "pinned" : "unpinned";
-  item.contextValue = project.favorite
-    ? `projectDeck.project.saved.${pinState}`
-    : `projectDeck.project.detected.${pinState}`;
+  item.contextValue = `projectDeck.project.${pinState}`;
   item.tooltip = new vscode.MarkdownString(project.rootPath);
   item.iconPath = new vscode.ThemeIcon(project.git ? "git-branch" : "folder");
 
   const parts: string[] = [];
   if (project.pinned) {
-    parts.push("$(pin)");
+    parts.push("★");
   }
   if (project.git?.branch) {
     parts.push(project.git.branch);

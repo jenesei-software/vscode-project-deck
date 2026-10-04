@@ -9,7 +9,7 @@ const MAX_OPENS = 50;
 
 export interface UiState {
   query?: string;
-  collapsedGroups?: string[];
+  collapsedGroups?: Record<string, boolean>;
 }
 
 export class StateStore {

@@ -38,7 +38,7 @@ export class Scanner {
     return this.views.find((view) => view.id === id);
   }
 
-  async refresh(): Promise<ProjectView[]> {
+  async refresh(force = false): Promise<ProjectView[]> {
     if (this.scanning) {
       this.pending = true;
       return this.views;
@@ -47,7 +47,9 @@ export class Scanner {
     try {
       const config = getConfig();
       this.git.setConcurrency(config.concurrency);
-      this.git.invalidate();
+      if (force) {
+        this.git.invalidate();
+      }
 
       const discovered =
         config.baseFolders.length > 0
@@ -82,9 +84,22 @@ export class Scanner {
       this.emitter.fire(this.views);
 
       if (config.showGitStatus) {
-        const statuses = await this.git.getStatuses(
+        const statuses = new Map<string, GitStatus | null>();
+        let lastFire = 0;
+        await this.git.getStatuses(
           merged.map((project) => project.rootPath),
+          (rootPath, status) => {
+            statuses.set(rootPath, status);
+            const now = Date.now();
+            if (now - lastFire < 150) {
+              return;
+            }
+            lastFire = now;
+            this.views = build(statuses);
+            this.emitter.fire(this.views);
+          },
         );
+        this.git.retain(merged.map((project) => project.rootPath));
         this.views = build(statuses);
         this.emitter.fire(this.views);
       }

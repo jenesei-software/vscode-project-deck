@@ -18,8 +18,8 @@ export async function activate(
   const store = new StateStore(context);
   const git = new GitService(getConfig().concurrency);
   const scanner = new Scanner(store, git);
-  const refresh = (): Promise<void> =>
-    scanner.refresh().then(
+  const refresh = (force = false): Promise<void> =>
+    scanner.refresh(force).then(
       () => undefined,
       (error) => {
         console.error("Project Deck scan failed", error);
@@ -66,6 +66,7 @@ export async function activate(
   const dashboard = new DashboardViewProvider(
     context.extensionUri,
     scanner,
+    store,
     handlers,
   );
   context.subscriptions.push(

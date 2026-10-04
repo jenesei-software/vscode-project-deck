@@ -4,6 +4,7 @@ import { groupProjects, sortGroups } from "../model/grouping";
 import { sortProjects } from "../model/ranking";
 import type { SortMode } from "../model/types";
 import type { Scanner } from "../services/scanner";
+import type { StateStore } from "../services/stateStore";
 import { groupLabel } from "./groupLabel";
 import {
   type DashboardState,
@@ -32,6 +33,7 @@ export class DashboardViewProvider implements vscode.WebviewViewProvider {
   constructor(
     private readonly extensionUri: vscode.Uri,
     private readonly scanner: Scanner,
+    private readonly store: StateStore,
     private readonly handlers: DashboardHandlers,
   ) {
     scanner.onDidChange(() => this.post());
@@ -80,6 +82,7 @@ export class DashboardViewProvider implements vscode.WebviewViewProvider {
       pathGroupDepth: config.pathGroupDepth,
       showGitStatus: config.showGitStatus,
       collapseGroups: config.collapseGroups,
+      collapsedGroups: this.store.getUi().collapsedGroups ?? {},
       loading: !this.scanner.hasScanned(),
       strings: buildStrings(),
     };
@@ -106,6 +109,12 @@ export class DashboardViewProvider implements vscode.WebviewViewProvider {
     }
     if (type === "setGroupDepth" && typeof message.depth === "number") {
       this.handlers.setGroupDepth(message.depth);
+      return;
+    }
+    if (type === "setCollapsed" && isRecord(message.collapsed)) {
+      void this.store.setUi({
+        collapsedGroups: sanitizeCollapsed(message.collapsed),
+      });
       return;
     }
 
@@ -142,6 +151,18 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+function sanitizeCollapsed(
+  value: Record<string, unknown>,
+): Record<string, boolean> {
+  const result: Record<string, boolean> = {};
+  for (const [key, collapsed] of Object.entries(value)) {
+    if (typeof collapsed === "boolean") {
+      result[key] = collapsed;
+    }
+  }
+  return result;
+}
+
 function buildStrings(): DashboardStrings {
   const t = vscode.l10n.t;
   return {
@@ -155,9 +176,10 @@ function buildStrings(): DashboardStrings {
     sortName: t("Name"),
     sortPath: t("Path"),
     sortRecent: t("Recent"),
+    sortTag: t("By tag"),
     groupDepth: t("Depth"),
-    saved: t("saved"),
-    detected: t("auto-detected"),
+    collapseAll: t("Collapse All"),
+    expandAll: t("Expand All"),
     clean: t("Clean"),
     open: t("Open"),
     openNewWindow: t("Open in New Window"),
