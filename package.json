@@ -2,7 +2,7 @@
   "name": "project-manager-hub",
   "displayName": "Project Manager Hub",
   "description": "A git-aware project hub: auto-discovers repositories, shows branch and working-tree state, ranks by recent activity and groups them by folder, tag or remote.",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "publisher": "jenesei-software",
   "license": "MIT",
   "repository": {
