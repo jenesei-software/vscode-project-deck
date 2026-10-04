@@ -3,7 +3,7 @@
 ## Reporting a vulnerability
 
 Please report suspected vulnerabilities privately through
-[GitHub Security Advisories](https://github.com/jenesei-software/vscode-project-deck/security/advisories/new)
+[GitHub Security Advisories](https://github.com/jenesei-software/vscode-project-manager-hub/security/advisories/new)
 rather than in a public issue.
 
 Include a description, reproduction steps and the affected version. We aim to

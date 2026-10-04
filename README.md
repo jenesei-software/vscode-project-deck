@@ -102,7 +102,7 @@ Install **Project Manager Hub** from the Visual Studio Marketplace, or run
 
 Project Manager Hub is free and open source. If it is useful to you:
 
-- ⭐ **Star the repository on [GitHub](https://github.com/jenesei-software/vscode-project-deck)** — it helps other people find it.
+- ⭐ **Star the repository on [GitHub](https://github.com/jenesei-software/vscode-project-manager-hub)** — it helps other people find it.
 - ☕ **[DonationAlerts](https://www.donationalerts.com/r/cyrilstrone)** — a one-time donation keeps the project alive.
 
 ## License

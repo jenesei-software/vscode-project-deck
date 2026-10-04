@@ -7,12 +7,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jenesei-software/vscode-project-deck"
+    "url": "https://github.com/jenesei-software/vscode-project-manager-hub"
   },
   "bugs": {
-    "url": "https://github.com/jenesei-software/vscode-project-deck/issues"
+    "url": "https://github.com/jenesei-software/vscode-project-manager-hub/issues"
   },
-  "homepage": "https://github.com/jenesei-software/vscode-project-deck#readme",
+  "homepage": "https://github.com/jenesei-software/vscode-project-manager-hub#readme",
   "engines": {
     "vscode": "^1.85.0",
     "node": ">=22"
