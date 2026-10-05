@@ -247,8 +247,7 @@ export function registerCommands(
   ): void => {
     context.subscriptions.push(
       vscode.commands.registerCommand(command, (arg?: unknown) => {
-        const id = typeof arg === "string" ? arg : undefined;
-        return handler(id);
+        return handler(idFromCommandArg(arg));
       }),
     );
   };
@@ -274,6 +273,19 @@ export function registerCommands(
       "projectDeck",
     ),
   );
+}
+
+function idFromCommandArg(arg: unknown): string | undefined {
+  if (typeof arg === "string") {
+    return arg;
+  }
+  if (typeof arg === "object" && arg !== null) {
+    const project = (arg as { project?: { id?: unknown } }).project;
+    if (project && typeof project.id === "string") {
+      return project.id;
+    }
+  }
+  return undefined;
 }
 
 async function pickProject(

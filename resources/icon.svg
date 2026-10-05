@@ -11,7 +11,9 @@
       <use href="#pd-folder" transform="translate(3 11)" fill="#000" stroke="#000" stroke-width="2" />
     </mask>
   </defs>
-  <g mask="url(#pd-back)"><use href="#pd-folder" transform="translate(10 4)" /></g>
-  <g mask="url(#pd-mid)"><use href="#pd-folder" transform="translate(6.5 7.5)" /></g>
-  <use href="#pd-folder" transform="translate(3 11)" />
+  <g transform="translate(12 12) scale(1.15) translate(-12.5 -13.5)">
+    <g mask="url(#pd-back)"><use href="#pd-folder" transform="translate(10 4)" /></g>
+    <g mask="url(#pd-mid)"><use href="#pd-folder" transform="translate(6.5 7.5)" /></g>
+    <use href="#pd-folder" transform="translate(3 11)" />
+  </g>
 </svg>

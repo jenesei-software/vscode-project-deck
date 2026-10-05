@@ -14,7 +14,11 @@ Everything is local: no network, no tokens, read-only Git queries.
 
 ## Screenshots
 
-_Coming soon._
+<table>
+  <tr>
+    <td align="center"><img src="resources/screenshot.png" alt="Project Manager Hub" width="400"><br><sub><b>Dashboard and Projects tree</b></sub></td>
+  </tr>
+</table>
 
 ## Features
 
