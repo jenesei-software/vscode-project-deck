@@ -1,6 +1,6 @@
 # Git commit rules
 
-default rules used when a repository has no local commit rules file.
+commit rules for this repository.
 
 ## Types
 
@@ -52,11 +52,3 @@ feat(dev): improve local development routing
 * configure Docker ports for local services;
 * adjust Caddy routing for local development.
 ```
-
-## Precedence
-
-the first file found wins, so a project-local file overrides this one:
-
-1. `<repo>/.agents/rules/git-commits.md`
-2. other `<repo>/.agents/*.md`, `<repo>/commit-rules.md`, `<repo>/.github/**`, `<repo>/docs/commit-rules.md`
-3. `~/.agents/rules/git-commits.md` (this file)
